@@ -1,3 +1,9 @@
+# My GPT Home - Custom Version
+
+This is my customized version of GPT-Home (https://github.com/judahpaul16/gpt-home), a personal assistant running on a Raspberry Pi. It is a fork of the original GPT-Home project by Judah Paul. This guide integrates installation, usage, testing, and troubleshooting steps with the original README to provide a comprehensive resource.
+
+---
+
 # 🏠 GPT Home 🤖💬
 
 ![Ubuntu Server Version](https://img.shields.io/badge/Ubuntu_Server-v24.04-orange?style=flat-square&logo=ubuntu)
@@ -11,15 +17,117 @@ ChatGPT at home! Basically a better Google Nest Hub or Amazon Alexa home assista
 
 ![My Build](screenshots/my_build.jpg)
 
-This guide will explain how to build your own. It's pretty straight forward. You can also use this as a reference for building other projects on the Raspberry Pi.
+This guide will explain how to build your own. It's pretty straightforward. You can also use this as a reference for building other projects on the Raspberry Pi.
 
-* *Theoretically, the app should run on any linux system thanks to docker, but I can only vouch for the versions listed in the [compatibility table](#-compatibility). You should be able use any plug-and-play USB/3.5mm speaker or microphone as long as it's supported by [ALSA](https://www.alsa-project.org) or [PortAudio](http://www.portaudio.com/docs/v19-doxydocs/index.html).*
+* *Theoretically, the app should run on any Linux system thanks to Docker, but I can only vouch for the versions listed in the [compatibility table](#-compatibility). You should be able to use any plug-and-play USB/3.5mm speaker or microphone as long as it's supported by [ALSA](https://www.alsa-project.org) or [PortAudio](http://www.portaudio.com/docs/v19-doxydocs/index.html).*
+
+---
+
+## **Quick Start**
+
+### **1. Logging Into the Raspberry Pi**
+- **SSH Command**:
+  ```bash
+  ssh admin@[Your Raspberry Pi's IP]
+  ```
+  Example:
+  ```bash
+  ssh admin@192.168.1.252
+  ```
+  - Default Username: `admin`
+  - Default Password: `admin`
+
+---
+
+### **2. Accessing the GUI**
+- **Web Address**:
+  ```
+  http://[Your Raspberry Pi's IP]:8000
+  ```
+  Example:
+  ```
+  http://192.168.1.252:8000
+  ```
+- **GUI Password**: `password`
+
+---
+
+### **3. Starting and Stopping GPT-Home**
+
+- **Start GPT-Home**:
+  ```bash
+  docker start gpt-home
+  ```
+
+- **Stop GPT-Home**:
+  ```bash
+  docker stop gpt-home
+  ```
+
+- **Restart GPT-Home**:
+  ```bash
+  docker restart gpt-home
+  ```
+
+---
+
+## **System Diagnostics**
+
+### **1. Viewing Logs**
+- **Live Logs**:
+  ```bash
+  docker logs -f gpt-home
+  ```
+- **Save Logs to a File**:
+  ```bash
+  docker logs gpt-home > gpt-home-logs.txt
+  ```
+
+---
+
+## **Audio Testing and Adjustments**
+
+### **1. Test the Microphone**
+Record and play back audio to ensure the microphone is functioning:
+```bash
+arecord -D hw:3,0 -c 1 -f S16_LE -r 44100 -d 5 test_input.wav
+aplay test_input.wav
+```
+
+### **2. Change Audio Levels**
+Adjust microphone or speaker volumes using `alsamixer`:
+1. Launch `alsamixer`:
+   ```bash
+   alsamixer
+   ```
+2. Use the arrow keys to adjust levels:
+   - **F6**: Select the correct audio device.
+   - **Arrow Keys**: Adjust volume.
+   - **ESC**: Exit.
+
+---
+
+## **Advanced Commands**
+
+### **1. Testing the STT Pipeline**
+Run a script to ensure the speech-to-text service is processing audio correctly:
+```bash
+docker exec -it gpt-home python /app/src/audio_test.py
+```
+
+### **2. Testing OpenAI API Integration**
+Test the OpenAI API to ensure it’s working correctly:
+```bash
+curl https://api.openai.com/v1/models \
+  -H "Authorization: Bearer sk-your-secret-key"
+```
+
+---
 
 <table align="center">
-
 <tr>
 <td>
-  
+
 <table>
 <th colspan="2" style="text-align: center;">📦 Integrations</th>
 <tr>
@@ -76,6 +184,8 @@ This guide will explain how to build your own. It's pretty straight forward. You
 
 </table>
 
+---
+
 
 ## 🚀 TL;DR
 1. ***Required for Semantic Routing:*** Make sure to export your OpenAI API Key to an environment variable.
@@ -106,8 +216,6 @@ Before connecting the battery, ensure that the polarity is correct to avoid dama
 </table>
 <span style="font-size: 1em; display:block;">[click to enlarge]</span>
 
-
----
 
 ## 🛠 My Parts List
 This is the list of parts I used to build my first GPT Home. You can use this as a reference for building your own. I've also included optional parts that you can add to enhance your setup. ***To be clear you can use any system that runs Linux.***
@@ -143,6 +251,7 @@ This is the list of parts I used to build my first GPT Home. You can use this as
 
 </p>
 </details>
+
 
 ## 📶 Configuring Wi-Fi via wpa_supplicant
 
@@ -830,12 +939,3 @@ chmod +x setup.sh
 </table>
 
 ---
-
-## 🤝 Contributing
-Contributions are certainly welcome! Please read the [`contributing guidelines`](CONTRIBUTING.md) for more information on how to contribute.
-
-## 📜 License
-This project is licensed under the GNU GPL v3.0 License - see the [`LICENSE`](LICENSE) file for details.
-
-## 🌟 Star History  
-[![Star History Chart](https://api.star-history.com/svg?repos=judahpaul16/gpt-home&type=Date&theme=dark)](https://star-history.com/#judahpaul16/gpt-home)
